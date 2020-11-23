@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{87113A35-DBDD-4C7D-ADB5-B43622C65CB9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>bg</RootNamespace>
+    <AssemblyName>bg</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SLRDbConnector">
+      <HintPath>..\..\..\..\Pictures\SLRDbConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlClient, Version=4.6.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.8.2\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BankDashboardT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BankDashboardT.Designer.cs">
+      <DependentUpon>BankDashboardT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BankDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BankDashboard.Designer.cs">
+      <DependentUpon>BankDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="login.Designer.cs">
+      <DependentUpon>login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="updateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="updateForm.Designer.cs">
+      <DependentUpon>updateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_DutyDetailsT.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_DutyDetailsT.Designer.cs">
+      <DependentUpon>Uc_DutyDetailsT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_DutyDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_DutyDetails.Designer.cs">
+      <DependentUpon>Uc_DutyDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_DeptFeeder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_DeptFeeder.Designer.cs">
+      <DependentUpon>Uc_DeptFeeder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_CentralFeeder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_CentralFeeder.Designer.cs">
+      <DependentUpon>Uc_CentralFeeder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_CourseRecordDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_CourseRecordDetails.Designer.cs">
+      <DependentUpon>Uc_CourseRecordDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_TASUserDetailsT.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_TASUserDetailsT.Designer.cs">
+      <DependentUpon>Uc_TASUserDetailsT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Uc_TASUserDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Uc_TASUserDetails.Designer.cs">
+      <DependentUpon>Uc_TASUserDetails.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="BankDashboardT.resx">
+      <DependentUpon>BankDashboardT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BankDashboard.resx">
+      <DependentUpon>BankDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="login.resx">
+      <DependentUpon>login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="updateForm.resx">
+      <DependentUpon>updateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_DutyDetailsT.resx">
+      <DependentUpon>Uc_DutyDetailsT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_DutyDetails.resx">
+      <DependentUpon>Uc_DutyDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_DeptFeeder.resx">
+      <DependentUpon>Uc_DeptFeeder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_CentralFeeder.resx">
+      <DependentUpon>Uc_CentralFeeder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_CourseRecordDetails.resx">
+      <DependentUpon>Uc_CourseRecordDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_TASUserDetailsT.resx">
+      <DependentUpon>Uc_TASUserDetailsT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Uc_TASUserDetails.resx">
+      <DependentUpon>Uc_TASUserDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\CommonHelp.Models.Cost_Centre.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.CourseType.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.Dept.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.ExlcHeadStr.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.Role.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.TAS_ClassesRecord.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.TAS_CourseRecord.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.TAS_Duty.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.TAS_Staff.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.TAS_User.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.Teacher_type.datasource" />
+    <None Include="Properties\DataSources\CommonHelp.Models.Title.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonHelp\CommonHelp.csproj">
+      <Project>{2b000bc5-6ab7-4e86-a938-09ae953a329f}</Project>
+      <Name>CommonHelp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
