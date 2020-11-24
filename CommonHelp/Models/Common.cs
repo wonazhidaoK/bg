@@ -2,6 +2,9 @@
 
 namespace CommonHelp.Models
 {
+    /*
+     * 这里存放了一些约定的值
+     */
     /// <summary>
     /// 角色
     /// </summary>
@@ -124,6 +127,8 @@ namespace CommonHelp.Models
         {
             ITGY = new Dept { Name = "ITGY", Value = "ITGY" };
             MGAF = new Dept { Name = "MGAF", Value = "MGAF" };
+            HS = new Dept { Name = "HS", Value = "HS" };
+            EEWT = new Dept { Name = "EEWT", Value = "EEWT" };
         }
 
         public string Value { get; set; }
@@ -140,7 +145,11 @@ namespace CommonHelp.Models
         /// </summary>
         public static Dept MGAF { get; set; }
 
-        public static IEnumerable<Dept> GetAll() => new List<Dept>() { MGAF, ITGY };
+        public static Dept HS { get; set; }
+
+        public static Dept EEWT { get; set; }
+
+        public static IEnumerable<Dept> GetAll() => new List<Dept>() { MGAF, ITGY,HS,EEWT };
     }
 
     /// <summary>

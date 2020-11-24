@@ -36,6 +36,7 @@
             this.lbDept = new System.Windows.Forms.Label();
             this.lbSchooltime = new System.Windows.Forms.Label();
             this.dtSchooltime = new System.Windows.Forms.DateTimePicker();
+            this.btnExport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deptBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -105,11 +106,22 @@
             this.dtSchooltime.TabIndex = 8;
             this.dtSchooltime.ValueChanged += new System.EventHandler(this.dtSchooltime_ValueChanged);
             // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(564, 73);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(75, 29);
+            this.btnExport.TabIndex = 12;
+            this.btnExport.Text = "Export All";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // Uc_DeptFeeder
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.dtSchooltime);
             this.Controls.Add(this.lbSchooltime);
             this.Controls.Add(this.lbDept);
@@ -135,5 +147,6 @@
         private System.Windows.Forms.BindingSource deptBindingSource;
         private System.Windows.Forms.Label lbSchooltime;
         private System.Windows.Forms.DateTimePicker dtSchooltime;
+        private System.Windows.Forms.Button btnExport;
     }
 }

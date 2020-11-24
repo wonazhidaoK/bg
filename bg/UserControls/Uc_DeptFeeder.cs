@@ -1,8 +1,10 @@
 ﻿using CommonHelp;
 using CommonHelp.Models;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -26,9 +28,7 @@ namespace bg.UserControls
         private void dgvStyle()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            //this.DataGridView1.AllowUserToAddRows = true;
-            //this.DataGridView1.AllowUserToDeleteRows = false;
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle(); 
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightCyan;
             this.DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridView1.BackgroundColor = System.Drawing.Color.White;
@@ -41,13 +41,10 @@ namespace bg.UserControls
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             this.DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            //this.DataGridView1.EnableHeadersVisualStyles = false;
-            this.DataGridView1.GridColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            //this.DataGridView1.ReadOnly = true;
-            this.DataGridView1.RowHeadersVisible = true; //建议改为true；为了以后显示序号。
-            this.DataGridView1.RowTemplate.Height = 23;
-            //this.DataGridView1.RowTemplate.ReadOnly = true;
+            this.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize; 
+            this.DataGridView1.GridColor = System.Drawing.SystemColors.GradientInactiveCaption; 
+            this.DataGridView1.RowHeadersVisible = true;  
+            this.DataGridView1.RowTemplate.Height = 23; 
         }
 
         private void BindingDepts()
@@ -72,91 +69,95 @@ namespace bg.UserControls
             var CourseRecords = help.GetTAS_CourseRecordAll();
             var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, dtSchooltime.Value.Day, 00, 00,00);
             var timeE = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, dtSchooltime.Value.Day, 23, 59, 59);
+            List<TAS_CourseRecord> list = new List<TAS_CourseRecord>();
+            SetMGAFDGV(DataGridView1);
             if (cbDept.Text == Dept.MGAF.Name)
             {
-                SetMGAFDGV(DataGridView1);
-                var list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
-                this.DataGridView1.RowCount = list.Count() + 1;
-                int i = 0;
-                foreach (DataGridViewRow row in this.DataGridView1.Rows)
-                {
-                    if (i >= list.Count())
-                    {
-                        return;
-                    }
-                    row.Cells["Course Code"].Value = list[i].CourseCode.Trim();
-                    row.Cells["Course Title"].Value = list[i].CourseTitle.Trim();
-                    row.Cells["HQ"].Value = list[i].HQ.ToString().Trim();
-                    row.Cells["ITGY"].Value = list[i].ITGY.ToString().Trim();
-                    row.Cells["SMG"].Value = list[i].SMG.ToString().Trim();
-                    row.Cells["UNITA"].Value = list[i].UNITA.ToString().Trim();
-                    row.Cells["UNITB"].Value = list[i].UNITB.ToString().Trim();
-                    row.Cells["UNITC"].Value = list[i].UNITC.ToString().Trim();
-                    row.Cells["MSAF"].Value = list[i].MSAF.ToString().Trim();
-                    var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = list[i].ID });
-                    if (classes.Count > 0)
-                    {
-                        var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.ChiefTR.Value);
-                        if (c != null)
-                        {
-                            ((DataGridViewComboBoxCell)row.Cells[Position.ChiefTR.Value]).Value = c.UId.Trim();
-                            row.Cells[Position.ChiefTR.Value + " classes"].Value = c.ClasseTitle;
-                            row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
-                        }
-                        c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
-                        if (c != null)
-                        {
-                            row.Cells[Position.CT.Value].Value = c.UId.Trim();
-                            row.Cells[Position.CT.Value + " classes"].Value = c.ClasseTitle;
-                            row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
-                        }
-                        c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
-                        if (c != null)
-                        {
-                            row.Cells[Position.OtherTR.Value].Value = c.UId.Trim();
-                            row.Cells[Position.OtherTR.Value + " classes"].Value = c.ClasseTitle;
-                            row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
-                        }
-                        c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TempTR.Value);
-                        if (c != null)
-                        {
-                            row.Cells[Position.TempTR.Value].Value = c.UId.Trim();
-                            row.Cells[Position.TempTR.Value + " classes"].Value = c.ClasseTitle;
-                            row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
-                        }
-                    }
-                    row.Cells["id"].Value = list[i].ID;
-                    i++;
-                }
+              
+                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
+               
+                
             }
             else
             {
-                SetITGYDGV(DataGridView1);
-                var list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x=>x.Schooltime>= timeS&& x.Schooltime<= timeE).ToList();
-                this.DataGridView1.RowCount = list.Count() + 1;
-                int i = 0;
-                foreach (DataGridViewRow row in this.DataGridView1.Rows)
+                //SetITGYDGV(DataGridView1);
+                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x=>x.Schooltime>= timeS&& x.Schooltime<= timeE).ToList();
+                //this.DataGridView1.RowCount = list.Count() + 1;
+                //int i = 0;
+                //foreach (DataGridViewRow row in this.DataGridView1.Rows)
+                //{
+                //    if (i >= list.Count())
+                //    {
+                //        return;
+                //    }
+                //    row.Cells["Course Code"].Value = list[i].CourseCode.Trim();
+                //    row.Cells["Course Title"].Value = list[i].CourseTitle.Trim();
+
+
+                //    var classe = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = list[i].ID }).FirstOrDefault();
+                //    if (classe != null)
+                //    {
+                //        //var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TR.Value);
+                //        //if (c != null)
+                //        //{
+                //        ((DataGridViewComboBoxCell)row.Cells["TR"]).Value = classe.UId.Trim();
+                //        row.Cells["TR classes"].Value = classe.ClasseTitle;
+                //        //} 
+                //    }
+                //    i++;
+                //}
+            }
+            this.DataGridView1.RowCount = list.Count() + 1;
+            int i = 0;
+            foreach (DataGridViewRow row in this.DataGridView1.Rows)
+            {
+                if (i >= list.Count())
                 {
-                    if (i >= list.Count())
-                    {
-                        return;
-                    }
-                    row.Cells["Course Code"].Value = list[i].CourseCode.Trim();
-                    row.Cells["Course Title"].Value = list[i].CourseTitle.Trim();
-
-
-                    var classe = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = list[i].ID }).FirstOrDefault();
-                    if (classe != null)
-                    {
-                        //var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TR.Value);
-                        //if (c != null)
-                        //{
-                        ((DataGridViewComboBoxCell)row.Cells["TR"]).Value = classe.UId.Trim();
-                        row.Cells["TR classes"].Value = classe.ClasseTitle;
-                        //} 
-                    }
-                    i++;
+                    return;
                 }
+                row.Cells["Course Code"].Value = list[i].CourseCode.Trim();
+                row.Cells["Course Title"].Value = list[i].CourseTitle.Trim();
+                row.Cells["HQ"].Value = list[i].HQ.ToString().Trim();
+                row.Cells["ITGY"].Value = list[i].ITGY.ToString().Trim();
+                row.Cells["SMG"].Value = list[i].SMG.ToString().Trim();
+                row.Cells["UNITA"].Value = list[i].UNITA.ToString().Trim();
+                row.Cells["UNITB"].Value = list[i].UNITB.ToString().Trim();
+                row.Cells["UNITC"].Value = list[i].UNITC.ToString().Trim();
+                row.Cells["MSAF"].Value = list[i].MSAF.ToString().Trim();
+                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = list[i].ID });
+                if (classes.Count > 0)
+                {
+                    var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.ChiefTR.Value);
+                    if (c != null)
+                    {
+                        ((DataGridViewComboBoxCell)row.Cells[Position.ChiefTR.Value]).Value = c.UId.Trim();
+                        row.Cells[Position.ChiefTR.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
+                    if (c != null)
+                    {
+                        row.Cells[Position.CT.Value].Value = c.UId.Trim();
+                        row.Cells[Position.CT.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
+                    if (c != null)
+                    {
+                        row.Cells[Position.OtherTR.Value].Value = c.UId.Trim();
+                        row.Cells[Position.OtherTR.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TempTR.Value);
+                    if (c != null)
+                    {
+                        row.Cells[Position.TempTR.Value].Value = c.UId.Trim();
+                        row.Cells[Position.TempTR.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                    }
+                }
+                row.Cells["id"].Value = list[i].ID;
+                i++;
             }
         }
 
@@ -178,119 +179,119 @@ namespace bg.UserControls
             var s = DataGridView1.Rows[e.RowIndex];
 
 
-            if (cbDept.Text == Dept.MGAF.Name)
+            //if (cbDept.Text == Dept.MGAF.Name)
+            //{
+            //    if (s.Cells.Count < 7)
+            //    {
+            //        return;
+            //    }
+            if (s.Cells["id"].Value != null)
             {
-                if (s.Cells.Count < 7)
-                {
-                    return;
-                }
-                if (s.Cells["id"].Value != null)
-                {
-                    return;
-                }
-                if ((s.Cells["Course Code"].Value == null) || (s.Cells["Course Title"].Value == null))
-                {
-                    return;
-                }
-                TAS_CourseRecord courseRecord = new TAS_CourseRecord();
-
-                courseRecord.CourseCode = s.Cells["Course Code"].Value.ToString();
-                courseRecord.CourseTitle = s.Cells["Course Title"].Value.ToString();
-                courseRecord.Dept = cbDept.Text;
-                courseRecord.HQ = s.Cells["HQ"].Value == null ? default : Convert.ToInt32(s.Cells["HQ"].Value.ToString());
-                courseRecord.ITGY = s.Cells["ITGY"].Value == null ? default : Convert.ToInt32(s.Cells["ITGY"].Value.ToString());
-                courseRecord.MSAF = s.Cells["MSAF"].Value == null ? default : Convert.ToInt32(s.Cells["MSAF"].Value.ToString());
-                courseRecord.Schooltime = dtSchooltime.Value;
-                courseRecord.SMG = s.Cells["SMG"].Value == null ? default : Convert.ToInt32(s.Cells["SMG"].Value.ToString());
-                courseRecord.UNITA = s.Cells["UNITA"].Value == null ? default : Convert.ToInt32(s.Cells["UNITA"].Value.ToString());
-                courseRecord.UNITB = s.Cells["UNITB"].Value == null ? default : Convert.ToInt32(s.Cells["UNITB"].Value.ToString());
-                courseRecord.UNITC = s.Cells["UNITC"].Value == null ? default : Convert.ToInt32(s.Cells["UNITC"].Value.ToString());
-
-                var r1 = help.AddTAS_CourseRecords(courseRecord);
-                if (r1 > 0)
-                {
-                    if (s.Cells[Position.ChiefTR.Value].Value != null && s.Cells[Position.ChiefTR.Value + " classes"].Value != null && s.Cells[Position.ChiefTR.Value + " Hours"].Value != null)
-                    {
-                        help.AddTAS_ClassesRecords(new TAS_ClassesRecord
-                        {
-                            ClasseTitle = s.Cells[Position.ChiefTR.Value + " classes"].Value.ToString(),
-                            CourseID = r1,
-                            Hours = Convert.ToInt32(s.Cells[Position.ChiefTR.Value + " Hours"].Value.ToString()),//TODO 需要再确认
-                            Position = Position.ChiefTR.Value,
-                            UId = s.Cells[Position.ChiefTR.Value].Value.ToString()
-                        });
-                    }
-                    if (s.Cells[Position.CT.Value].Value != null && s.Cells[Position.CT.Value + " classes"].Value != null)
-                    {
-                        help.AddTAS_ClassesRecords(new TAS_ClassesRecord
-                        {
-                            ClasseTitle = s.Cells[Position.CT.Value + " classes"].Value.ToString(),
-                            CourseID = r1,
-                            Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),//TODO 需要再确认
-                            Position = Position.CT.Value,
-                            UId = s.Cells[Position.CT.Value].Value.ToString()
-                        });
-                    }
-                    if (s.Cells[Position.OtherTR.Value].Value != null && s.Cells[Position.OtherTR.Value + " classes"].Value != null)
-                    {
-                        help.AddTAS_ClassesRecords(new TAS_ClassesRecord
-                        {
-                            ClasseTitle = s.Cells[Position.OtherTR.Value + " classes"].Value.ToString(),
-                            CourseID = r1,
-                            Hours = Convert.ToInt32(s.Cells[Position.OtherTR.Value + " Hours"].Value.ToString()),//TODO 需要再确认
-                            Position = Position.OtherTR.Value,
-                            UId = s.Cells[Position.OtherTR.Value].Value.ToString()
-                        });
-                    }
-                    if (s.Cells[Position.TempTR.Value].Value != null && s.Cells[Position.TempTR.Value + " classes"].Value != null)
-                    {
-                        help.AddTAS_ClassesRecords(new TAS_ClassesRecord
-                        {
-                            ClasseTitle = s.Cells[Position.TempTR.Value + " classes"].Value.ToString(),
-                            CourseID = r1,
-                            Hours = Convert.ToInt32(s.Cells[Position.TempTR.Value + " Hours"].Value.ToString()),
-                            Position = Position.TempTR.Value,
-                            UId = s.Cells[Position.TempTR.Value].Value.ToString()
-                        });
-                    }
-                }
+                return;
             }
-            else
+            if ((s.Cells["Course Code"].Value == null) || (s.Cells["Course Title"].Value == null))
             {
-                if (s.Cells.Count > 6)
-                {
-                    return;
-                }
-                if (s.Cells[4].Value == null)
-                {
-                    return;
-                }
+                return;
+            }
+            TAS_CourseRecord courseRecord = new TAS_CourseRecord();
 
-                if ((s.Cells[2].Value == null) || (s.Cells[3].Value == null))
-                {
-                    return;
-                }
+            courseRecord.CourseCode = s.Cells["Course Code"].Value.ToString();
+            courseRecord.CourseTitle = s.Cells["Course Title"].Value.ToString();
+            courseRecord.Dept = cbDept.Text;
+            courseRecord.HQ = s.Cells["HQ"].Value == null ? default : Convert.ToInt32(s.Cells["HQ"].Value.ToString());
+            courseRecord.ITGY = s.Cells["ITGY"].Value == null ? default : Convert.ToInt32(s.Cells["ITGY"].Value.ToString());
+            courseRecord.MSAF = s.Cells["MSAF"].Value == null ? default : Convert.ToInt32(s.Cells["MSAF"].Value.ToString());
+            courseRecord.Schooltime = dtSchooltime.Value;
+            courseRecord.SMG = s.Cells["SMG"].Value == null ? default : Convert.ToInt32(s.Cells["SMG"].Value.ToString());
+            courseRecord.UNITA = s.Cells["UNITA"].Value == null ? default : Convert.ToInt32(s.Cells["UNITA"].Value.ToString());
+            courseRecord.UNITB = s.Cells["UNITB"].Value == null ? default : Convert.ToInt32(s.Cells["UNITB"].Value.ToString());
+            courseRecord.UNITC = s.Cells["UNITC"].Value == null ? default : Convert.ToInt32(s.Cells["UNITC"].Value.ToString());
 
-                var r1 = help.AddTAS_CourseRecords(new TAS_CourseRecord
-                {
-                    CourseCode = s.Cells[2].Value.ToString(),
-                    CourseTitle = s.Cells[3].Value.ToString(),
-                    Dept = cbDept.Text,
-                    Schooltime = dtSchooltime.Value
-                });
-
-                if (r1 > 0)
+            var r1 = help.AddTAS_CourseRecords(courseRecord);
+            if (r1 > 0)
+            {
+                if (s.Cells[Position.ChiefTR.Value].Value != null && s.Cells[Position.ChiefTR.Value + " classes"].Value != null && s.Cells[Position.ChiefTR.Value + " Hours"].Value != null)
                 {
                     help.AddTAS_ClassesRecords(new TAS_ClassesRecord
                     {
-                        ClasseTitle = s.Cells[1].Value.ToString(),
+                        ClasseTitle = s.Cells[Position.ChiefTR.Value + " classes"].Value.ToString(),
                         CourseID = r1,
-                        Hours = Convert.ToInt32(s.Cells["Course Hours"].Value.ToString()),//TODO 需要再确认
-                        Position = "TR",
-                        UId = s.Cells[0].Value.ToString().Trim()
+                        Hours = Convert.ToInt32(s.Cells[Position.ChiefTR.Value + " Hours"].Value.ToString()),//TODO 需要再确认
+                        Position = Position.ChiefTR.Value,
+                        UId = s.Cells[Position.ChiefTR.Value].Value.ToString()
+                    });
+                }
+                if (s.Cells[Position.CT.Value].Value != null && s.Cells[Position.CT.Value + " classes"].Value != null)
+                {
+                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+                    {
+                        ClasseTitle = s.Cells[Position.CT.Value + " classes"].Value.ToString(),
+                        CourseID = r1,
+                        Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),//TODO 需要再确认
+                        Position = Position.CT.Value,
+                        UId = s.Cells[Position.CT.Value].Value.ToString()
+                    });
+                }
+                if (s.Cells[Position.OtherTR.Value].Value != null && s.Cells[Position.OtherTR.Value + " classes"].Value != null)
+                {
+                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+                    {
+                        ClasseTitle = s.Cells[Position.OtherTR.Value + " classes"].Value.ToString(),
+                        CourseID = r1,
+                        Hours = Convert.ToInt32(s.Cells[Position.OtherTR.Value + " Hours"].Value.ToString()),//TODO 需要再确认
+                        Position = Position.OtherTR.Value,
+                        UId = s.Cells[Position.OtherTR.Value].Value.ToString()
+                    });
+                }
+                if (s.Cells[Position.TempTR.Value].Value != null && s.Cells[Position.TempTR.Value + " classes"].Value != null)
+                {
+                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+                    {
+                        ClasseTitle = s.Cells[Position.TempTR.Value + " classes"].Value.ToString(),
+                        CourseID = r1,
+                        Hours = Convert.ToInt32(s.Cells[Position.TempTR.Value + " Hours"].Value.ToString()),
+                        Position = Position.TempTR.Value,
+                        UId = s.Cells[Position.TempTR.Value].Value.ToString()
                     });
                 }
             }
+            //}
+            //else
+            //{
+            //    if (s.Cells.Count > 6)
+            //    {
+            //        return;
+            //    }
+            //    if (s.Cells[4].Value == null)
+            //    {
+            //        return;
+            //    }
+
+            //    if ((s.Cells[2].Value == null) || (s.Cells[3].Value == null))
+            //    {
+            //        return;
+            //    }
+
+            //    var r1 = help.AddTAS_CourseRecords(new TAS_CourseRecord
+            //    {
+            //        CourseCode = s.Cells[2].Value.ToString(),
+            //        CourseTitle = s.Cells[3].Value.ToString(),
+            //        Dept = cbDept.Text,
+            //        Schooltime = dtSchooltime.Value
+            //    });
+
+            //    if (r1 > 0)
+            //    {
+            //        help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+            //        {
+            //            ClasseTitle = s.Cells[1].Value.ToString(),
+            //            CourseID = r1,
+            //            Hours = Convert.ToInt32(s.Cells["Course Hours"].Value.ToString()),//TODO 需要再确认
+            //            Position = "TR",
+            //            UId = s.Cells[0].Value.ToString().Trim()
+            //        });
+            //    }
+            //}
         }
 
         public DataGridView SetITGYDGV(DataGridView dataGridView)
@@ -341,58 +342,61 @@ namespace bg.UserControls
                     List<TAS_User> users = new List<TAS_User>();
                     if (list.Count() > 0)
                     {
-                        var 第几周 = WeekHelp.GetWeekByTime(DateTime.Now);
-                        var 本周的星期一 = WeekHelp.GetTimeByWeek(2020, 第几周, 1);
-                        var 前一周的星期一 = WeekHelp.GetTimeByWeek(2020, 第几周 - 1, 1);
-                        var 前两周的星期一 = WeekHelp.GetTimeByWeek(2020, 第几周 - 2, 1);
-                        var 前三周的星期一 = WeekHelp.GetTimeByWeek(2020, 第几周 - 3, 1);
-                        var 本周课程 = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= 本周的星期一 && x.Schooltime <= 本周的星期一.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
-                        List<TAS_ClassesRecord> 本周课程班级 = new List<TAS_ClassesRecord>();
-                        if (本周课程.Count > 0)
+                        /*
+                         * 分别找寻前三周和本周的工作时长 判断是否能继续雇佣
+                         */
+                        var WeekNo = WeekHelp.GetWeekByTime(DateTime.Now);
+                        var ThisWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo, 1);
+                        var LastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 1, 1);
+                        var BeforeLastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 2, 1);
+                        var FirstThreeWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 3, 1);
+                        var ThisWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= ThisWeekMonday && x.Schooltime <= ThisWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        List<TAS_ClassesRecord> ThisWeekCourseClass = new List<TAS_ClassesRecord>();
+                        if (ThisWeekCourse.Count > 0)
                         {
-                            本周课程班级 = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel
+                            ThisWeekCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel
                             {
-                                ids = 本周课程.Select(x => x.ID).ToArray()
+                                ids = ThisWeekCourse.Select(x => x.ID).ToArray()
                             });
                         }
 
-                        var 前一周课程 = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= 前一周的星期一 && x.Schooltime <= 前一周的星期一.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
-                        List<TAS_ClassesRecord> 前一周课程班级 = new List<TAS_ClassesRecord>();
-                        if (前一周课程.Count > 0) { 前一周课程班级 = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = 前一周课程.Select(x => x.ID).ToArray() }); }
+                        var LastWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= LastWeekMonday && x.Schooltime <= LastWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        List<TAS_ClassesRecord> LastWeekCourseClass = new List<TAS_ClassesRecord>();
+                        if (LastWeekCourse.Count > 0) { LastWeekCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = LastWeekCourse.Select(x => x.ID).ToArray() }); }
 
 
-                        var 前两周课程 = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= 前两周的星期一 && x.Schooltime <= 前两周的星期一.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
-                        List<TAS_ClassesRecord> 前两周课程班级 = new List<TAS_ClassesRecord>();
-                        if (前两周课程.Count > 0) { 前两周课程班级 = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = 前两周课程.Select(x => x.ID).ToArray() }); }
+                        var BeforeLastCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= BeforeLastWeekMonday && x.Schooltime <= BeforeLastWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        List<TAS_ClassesRecord> BeforeLastCourseClass = new List<TAS_ClassesRecord>();
+                        if (BeforeLastCourse.Count > 0) { BeforeLastCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = BeforeLastCourse.Select(x => x.ID).ToArray() }); }
 
-                        var 前三周课程 = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= 前三周的星期一 && x.Schooltime <= 前三周的星期一.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
-                        List<TAS_ClassesRecord> 前三周课程班级 = new List<TAS_ClassesRecord>();
-                        if (前三周课程.Count > 0) { 前三周课程班级 = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = 前三周课程.Select(x => x.ID).ToArray() }); }
+                        var FirstThreeCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= FirstThreeWeekMonday && x.Schooltime <= FirstThreeWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        List<TAS_ClassesRecord> FirstThreeCourseClass = new List<TAS_ClassesRecord>();
+                        if (FirstThreeCourse.Count > 0) { FirstThreeCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = FirstThreeCourse.Select(x => x.ID).ToArray() }); }
 
                         foreach (var user in list)
                         {
-                            double 本周课时 = 0;
-                            if (本周课程班级.Count > 0)
+                            double ThisWeekhour = 0;
+                            if (ThisWeekCourseClass.Count > 0)
                             {
-                                本周课时 = 本周课程班级.Where(x => x.UId == user.UId).Sum(x => x.Hours);
+                                ThisWeekhour = ThisWeekCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
-                            double 前一周课时 = 0;
-                            if (前一周课程班级.Count > 0)
+                            double LastWeekhour = 0;
+                            if (LastWeekCourseClass.Count > 0)
                             {
-                                前一周课时 = 前一周课程班级.Where(x => x.UId == user.UId).Sum(x => x.Hours);
+                                LastWeekhour = LastWeekCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
-                            double 前三周课时 = 0;
-                            if (前三周课程班级.Count > 0)
+                            double FirstThreehour = 0;
+                            if (FirstThreeCourseClass.Count > 0)
                             {
-                                前三周课时 = 前三周课程班级.Where(x => x.UId == user.UId).Sum(x => x.Hours);
+                                FirstThreehour = FirstThreeCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
-                            double 前两周课时 = 0;
-                            if (前两周课程班级.Count > 0)
+                            double BeforeLasthour = 0;
+                            if (BeforeLastCourseClass.Count > 0)
                             {
-                                前两周课时 = 前两周课程班级.Where(x => x.UId == user.UId).Sum(x => x.Hours);
+                                BeforeLasthour = BeforeLastCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
 
-                            if (!((本周课时 >= 18) && (前一周课时 >= 18) && (前两周课时 >= 18) && (前三周课时 >= 18)))
+                            if (!((ThisWeekhour >= 18) && (LastWeekhour >= 18) && (BeforeLasthour >= 18) && (FirstThreehour >= 18)))
                             {
                                 users.Add(user);
                             }
@@ -429,6 +433,331 @@ namespace bg.UserControls
         private void dtSchooltime_ValueChanged(object sender, EventArgs e)
         {
             LoadDgv();
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            List<WorksheetModel> worksheets = new List<WorksheetModel>();
+            /*
+             * 导出文件的具体规则
+             */
+            SetCentralFeeder(worksheets);
+            SetRef(worksheets);
+            foreach (var item in Dept.GetAll())
+            {
+                SetDeptFeeder(worksheets,item);
+            } 
+            DataTableToExcel(worksheets);
+        }
+        private void SetRef(List<WorksheetModel> worksheets)
+        {
+            //var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, 1, 00, 00, 00);
+
+            //var timeE = GetCurrentMonthLastDay(timeS);
+            var users = help.GetTAS_UserAll();
+            //var list = CourseRecords.Where(x => x.Dept.Trim() == dept.Value.ToString()).ToList();
+            if (users.Count < 1)
+            {
+                return;
+            }
+            System.Data.DataTable dt1 = new System.Data.DataTable();
+            dt1.Columns.Add("User ID");
+            dt1.Columns.Add("Full Name");
+            //foreach (var item in Cost_Centre.GetAll())
+            //{
+            //    dt1.Columns.Add(item.Name);
+            //}
+            //foreach (var item in Position.GetMGAFAll())
+            //{
+            //    dt1.Columns.Add(item.Value);
+            //    dt1.Columns.Add(item.Value + " classes");
+            //    dt1.Columns.Add(item.Value + " Hours");
+            //}
+            string[] strHead = new string[19];
+            foreach (var item in users)
+            {
+                DataRow NewRow = dt1.NewRow();
+                NewRow["User ID"] = item.UId;
+                NewRow["Full Name"] = item.Fname+" "+item.Lname; 
+
+                
+                dt1.Rows.Add(NewRow);
+            }
+            worksheets.Add(new WorksheetModel
+            {
+                Table = dt1,
+                Title = "",
+                WorksheetName = "Ref",
+                HeadStr = null
+
+            });
+        }
+
+        private void SetDeptFeeder(List<WorksheetModel> worksheets, Dept dept)
+        {
+            var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, 1, 00, 00, 00);
+
+            var timeE = GetCurrentMonthLastDay(timeS);
+            var CourseRecords = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE);
+            var list = CourseRecords.Where(x => x.Dept.Trim() == dept.Value.ToString()).ToList();
+            if (list.Count<1)
+            {
+                return;
+            }
+            System.Data.DataTable dt1 = new System.Data.DataTable();
+            dt1.Columns.Add("Course Code");
+            dt1.Columns.Add("Course Title");
+            foreach (var item in Cost_Centre.GetAll())
+            {
+                dt1.Columns.Add(item.Name);
+            }
+            foreach (var item in Position.GetMGAFAll())
+            {
+                dt1.Columns.Add(item.Value);
+                dt1.Columns.Add(item.Value + " classes");
+                dt1.Columns.Add(item.Value + " Hours");
+            }
+            string[] strHead = new string[19];
+            foreach (var item in list)
+            {
+                DataRow NewRow = dt1.NewRow();
+                NewRow["Course Code"] = item.CourseCode;
+                NewRow["Course Title"] = item.CourseTitle;
+                NewRow["HQ"] = item.HQ;
+                NewRow["ITGY"] = item.ITGY;
+                NewRow["SMG"] = item.SMG;
+                NewRow["UNITA"] = item.UNITA;
+                NewRow["UNITB"] = item.UNITB;
+                NewRow["UNITC"] = item.UNITC;
+                NewRow["MSAF"] = item.MSAF;
+
+                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID });
+                if (classes.Count > 0)
+                {
+                    var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.ChiefTR.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.ChiefTR.Value] = c.UId.Trim();
+                        NewRow[Position.ChiefTR.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.ChiefTR.Value + " Hours"] = c.Hours;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.CT.Value] = c.UId.Trim();
+                        NewRow[Position.CT.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.CT.Value + " Hours"] = c.Hours;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.OtherTR.Value] = c.UId.Trim();
+                        NewRow[Position.OtherTR.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.OtherTR.Value + " Hours"] = c.Hours;// c.UId.Trim();
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TempTR.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.TempTR.Value] = c.UId.Trim();
+                        NewRow[Position.TempTR.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.TempTR.Value + " Hours"] = c.Hours;//.Trim();
+                    }
+                }
+                dt1.Rows.Add(NewRow);
+            }
+            worksheets.Add(new WorksheetModel
+            {
+                Table = dt1,
+                Title = "",
+                WorksheetName = "Dept Feeder-" + dept.Value.ToString(),
+                HeadStr = new string[1] { dept.Value.ToString() }
+
+            }); ;
+        }
+
+        /// <summary>
+        /// 获取指定月份的最后一天
+        /// </summary>
+        /// <param name="dateTime">传入时间</param>
+        /// <returns></returns>
+        public DateTime GetCurrentMonthLastDay(DateTime dateTime)
+        {
+            DateTime d1 = new DateTime(dateTime.Year, dateTime.Month, 1);
+            DateTime d2 = d1.AddMonths(1).AddDays(-1);
+            return d2;
+        }
+        private void SetCentralFeeder(List<WorksheetModel> worksheets)
+        {
+            var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, 1, 00, 00, 00);
+
+            var timeE = GetCurrentMonthLastDay(timeS);
+            var CourseRecords = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE);
+            var list = CourseRecords.Where(x => x.Dept.Trim() == Dept.ITGY.Value.ToString()).ToList();
+            System.Data.DataTable dt1 = new System.Data.DataTable();
+            dt1.Columns.Add("Course Code");
+            dt1.Columns.Add("Course Title");
+            dt1.Columns.Add("User ID");
+            dt1.Columns.Add("Classes");
+            dt1.Columns.Add("Normal or OT");
+            foreach (var item in list)
+            {
+                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID }).FirstOrDefault();
+                if (classes != null)
+                {
+                    DataRow NewRow = dt1.NewRow();
+                    NewRow["Course Code"] = item.CourseCode;
+                    NewRow["Course Title"] = item.CourseTitle;
+                    NewRow["User ID"] = classes.UId;
+                    NewRow["Classes"] = classes.ClasseTitle;
+                    NewRow["Normal or OT"] = classes.Position.Trim() == Position.TROT.Value ? "OT" : (classes.Position.Trim() == Position.CT.Value ? "CT" : "");
+                    dt1.Rows.Add(NewRow);
+                }
+            }
+            worksheets.Add(new WorksheetModel
+            {
+                Table = dt1,
+                Title = "",
+                WorksheetName = "Central Feeder",
+                HeadStr = null
+
+            });
+        }
+
+        public class WorksheetModel
+        {
+            public string Title { get; set; }
+
+            public System.Data.DataTable Table { get; set; }
+
+            public string WorksheetName { get; set; }
+
+            public string[] HeadStr { get; set; }
+        }
+
+        public void DataTableToExcel(List<WorksheetModel> worksheets)
+        {
+
+
+            //创建Excel对象
+            Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+            //新建工作簿
+            Workbook workBook = excelApp.Workbooks.Add(true);
+            int i = 1;
+            foreach (var item in worksheets)
+            {
+                if (item.HeadStr==null)
+                {
+
+                    NoHead(item.Table, item.HeadStr, item.WorksheetName, excelApp, workBook, i);
+                }
+                else {
+                   OneHead(item.Table, item.HeadStr, item.WorksheetName, excelApp, workBook, i);
+                }
+                i++;
+            }
+
+            //设置Excel可见
+            excelApp.Visible = true;
+        }
+
+        private static void NoHead(System.Data.DataTable dataTable, string[] strHead, string worksheetName, Microsoft.Office.Interop.Excel.Application excelApp, Workbook workBook, int worksheetIndex)
+        {
+
+            Worksheet worksheet;
+            if (worksheetIndex > 1)
+            {
+                object missing = System.Reflection.Missing.Value;
+                worksheet = (Worksheet)workBook.Worksheets.Add(missing, missing, missing, missing);//添加一个sheet  
+            }
+            else
+            {
+                worksheet = (Worksheet)workBook.Worksheets[worksheetIndex];//取得sheet1  
+            }
+            worksheet.Name = worksheetName;
+
+            //设置表头 
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                Range headRange = worksheet.Cells[1, i + 1] as Range;//获取表头单元格,不用标题则从1开始
+                headRange.Value2 = dataTable.Columns[i].ColumnName;                              //设置单元格文本
+                headRange.Font.Name = "Consolas";                           //设置字体
+                headRange.Font.Size = 13;                                   //字体大小
+                headRange.Font.Bold = true;                                 //加粗显示
+                headRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;    //水平居中
+                headRange.VerticalAlignment = XlVAlign.xlVAlignCenter;      //垂直居中
+                                                                            //headRange.ColumnWidth = columnWidth[i];                     //设置列宽
+                headRange.Borders.LineStyle = XlLineStyle.xlContinuous;     //设置边框
+                headRange.Borders.Weight = XlBorderWeight.xlThin;           //边框常规粗细
+
+
+            }
+
+            //填充数据
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                for (int j = 0; j < dataTable.Columns.Count; j++)
+                {
+                    excelApp.Cells[i + 2, j + 1] = row[j].ToString().Trim();
+                }
+            }
+
+        }
+
+        private static void OneHead(System.Data.DataTable dataTable, string[] strHead, string worksheetName, Microsoft.Office.Interop.Excel.Application excelApp, Workbook workBook, int worksheetIndex)
+        {
+
+            Worksheet worksheet;
+            if (worksheetIndex > 1)
+            {
+                object missing = System.Reflection.Missing.Value;
+                worksheet = (Worksheet)workBook.Worksheets.Add(missing, missing, missing, missing);//添加一个sheet  
+            }
+            else
+            {
+                worksheet = (Worksheet)workBook.Worksheets[worksheetIndex];//取得sheet1  
+            }
+            worksheet.Name = worksheetName;
+            ////设置标题
+            Microsoft.Office.Interop.Excel.Range titleRange = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1,1]];//选取单元格
+
+            titleRange.Merge(true);                                         //合并单元格
+            titleRange.Value2 = strHead[0];                                   //设置单元格内文本
+            titleRange.Font.Name = "微软雅黑";                              //设置字体
+            titleRange.Font.Size = 18;                                      //字体大小
+            titleRange.Font.Bold = true;                                    //加粗显示
+            titleRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;       //水平居中
+            titleRange.VerticalAlignment = XlVAlign.xlVAlignCenter;         //垂直居中
+            titleRange.Borders.LineStyle = XlLineStyle.xlContinuous;        //设置边框
+            titleRange.Borders.Weight = XlBorderWeight.xlThin;              //边框常规粗细
+            titleRange.Interior.Color = Color.FromArgb(95, 158, 160);//设置颜色
+            //设置表头 
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                Range headRange = worksheet.Cells[2, i + 1] as Range;//获取表头单元格,不用标题则从1开始
+                headRange.Value2 = dataTable.Columns[i].ColumnName;                              //设置单元格文本
+                headRange.Font.Name = "Consolas";                           //设置字体
+                headRange.Font.Size = 13;                                   //字体大小
+                headRange.Font.Bold = true;                                 //加粗显示
+                headRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;    //水平居中
+                headRange.VerticalAlignment = XlVAlign.xlVAlignCenter;      //垂直居中
+                                                                            //headRange.ColumnWidth = columnWidth[i];                     //设置列宽
+                headRange.Borders.LineStyle = XlLineStyle.xlContinuous;     //设置边框
+                headRange.Borders.Weight = XlBorderWeight.xlThin;           //边框常规粗细
+
+
+            }
+
+            //填充数据
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                for (int j = 0; j < dataTable.Columns.Count; j++)
+                {
+                    excelApp.Cells[i + 3, j + 1] = row[j].ToString().Trim();
+                }
+            }
+
         }
     }
 }
