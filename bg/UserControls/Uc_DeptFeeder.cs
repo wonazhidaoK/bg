@@ -28,7 +28,7 @@ namespace bg.UserControls
         private void dgvStyle()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle(); 
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightCyan;
             this.DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridView1.BackgroundColor = System.Drawing.Color.White;
@@ -41,21 +41,15 @@ namespace bg.UserControls
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             this.DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize; 
-            this.DataGridView1.GridColor = System.Drawing.SystemColors.GradientInactiveCaption; 
-            this.DataGridView1.RowHeadersVisible = true;  
-            this.DataGridView1.RowTemplate.Height = 23; 
+            this.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DataGridView1.GridColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.DataGridView1.RowHeadersVisible = true;
+            this.DataGridView1.RowTemplate.Height = 23;
         }
 
         private void BindingDepts()
         {
-            List<Dept> depts = new List<Dept>()
-            {
-              Dept.MGAF,
-              Dept.ITGY
-            };
-
-            deptBindingSource.DataSource = depts;
+            deptBindingSource.DataSource = Dept.GetAll();
             cbDept.DataSource = deptBindingSource;
         }
 
@@ -67,21 +61,21 @@ namespace bg.UserControls
         private void LoadDgv()
         {
             var CourseRecords = help.GetTAS_CourseRecordAll();
-            var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, dtSchooltime.Value.Day, 00, 00,00);
+            var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, dtSchooltime.Value.Day, 00, 00, 00);
             var timeE = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, dtSchooltime.Value.Day, 23, 59, 59);
             List<TAS_CourseRecord> list = new List<TAS_CourseRecord>();
             SetMGAFDGV(DataGridView1);
             if (cbDept.Text == Dept.MGAF.Name)
             {
-              
-                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
-               
-                
+
+                list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
+
+
             }
             else
             {
                 //SetITGYDGV(DataGridView1);
-                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x=>x.Schooltime>= timeS&& x.Schooltime<= timeE).ToList();
+                list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
                 //this.DataGridView1.RowCount = list.Count() + 1;
                 //int i = 0;
                 //foreach (DataGridViewRow row in this.DataGridView1.Rows)
@@ -396,7 +390,7 @@ namespace bg.UserControls
                                 BeforeLasthour = BeforeLastCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
 
-                            if (!((ThisWeekhour >= 18) && (LastWeekhour >= 18) && (BeforeLasthour >= 18) && (FirstThreehour >= 18)))
+                            if (!((ThisWeekhour >= 18) || (LastWeekhour >= 18) || (BeforeLasthour >= 18) || (FirstThreehour) >= 18))
                             {
                                 users.Add(user);
                             }
@@ -445,8 +439,8 @@ namespace bg.UserControls
             SetRef(worksheets);
             foreach (var item in Dept.GetAll())
             {
-                SetDeptFeeder(worksheets,item);
-            } 
+                SetDeptFeeder(worksheets, item);
+            }
             DataTableToExcel(worksheets);
         }
         private void SetRef(List<WorksheetModel> worksheets)
@@ -478,9 +472,9 @@ namespace bg.UserControls
             {
                 DataRow NewRow = dt1.NewRow();
                 NewRow["User ID"] = item.UId;
-                NewRow["Full Name"] = item.Fname+" "+item.Lname; 
+                NewRow["Full Name"] = item.Fname + " " + item.Lname;
 
-                
+
                 dt1.Rows.Add(NewRow);
             }
             worksheets.Add(new WorksheetModel
@@ -500,7 +494,7 @@ namespace bg.UserControls
             var timeE = GetCurrentMonthLastDay(timeS);
             var CourseRecords = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE);
             var list = CourseRecords.Where(x => x.Dept.Trim() == dept.Value.ToString()).ToList();
-            if (list.Count<1)
+            if (list.Count < 1)
             {
                 return;
             }
@@ -645,13 +639,14 @@ namespace bg.UserControls
             int i = 1;
             foreach (var item in worksheets)
             {
-                if (item.HeadStr==null)
+                if (item.HeadStr == null)
                 {
 
                     NoHead(item.Table, item.HeadStr, item.WorksheetName, excelApp, workBook, i);
                 }
-                else {
-                   OneHead(item.Table, item.HeadStr, item.WorksheetName, excelApp, workBook, i);
+                else
+                {
+                    OneHead(item.Table, item.HeadStr, item.WorksheetName, excelApp, workBook, i);
                 }
                 i++;
             }
@@ -719,7 +714,7 @@ namespace bg.UserControls
             }
             worksheet.Name = worksheetName;
             ////设置标题
-            Microsoft.Office.Interop.Excel.Range titleRange = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1,1]];//选取单元格
+            Microsoft.Office.Interop.Excel.Range titleRange = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1, 1]];//选取单元格
 
             titleRange.Merge(true);                                         //合并单元格
             titleRange.Value2 = strHead[0];                                   //设置单元格内文本

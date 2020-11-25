@@ -43,6 +43,12 @@ namespace CommonHelp
            ,@StaffNo
            ,@Type)", tAS_user);
         }
+
+        public int DelectTAS_users(TAS_User tAS_user)
+        {
+            return DapperHelper<TAS_User>.Execute(@"DELETE FROM [dbo].[TAS_User]
+      WHERE id=@Id", tAS_user);
+        }
         #endregion
 
         #region TAS_Staff
@@ -167,7 +173,7 @@ namespace CommonHelp
         }
         public List<TAS_ClassesRecord> GetTAS_ClassesRecordByCourseIds(ByCourseIdsModel byCourseIdsModel)
         {
-            return DapperHelper<TAS_ClassesRecord>.Query(@"SELECT *  FROM [dbo].[TAS_ClassesRecord] where CourseID in (@ids)", byCourseIdsModel);
+            return DapperHelper<TAS_ClassesRecord>.Query(@"SELECT *  FROM [dbo].[TAS_ClassesRecord] where CourseID in @ids", byCourseIdsModel);
         }
         public List<TAS_ClassesRecord> GetTAS_ClassesRecordAll()
         {

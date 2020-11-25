@@ -30,7 +30,6 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.dgvCF = new System.Windows.Forms.DataGridView();
-            this.btnExport = new System.Windows.Forms.Button();
             this.dtSchooltime = new System.Windows.Forms.DateTimePicker();
             this.lbSchooltime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCF)).BeginInit();
@@ -56,16 +55,6 @@
             this.dgvCF.RowTemplate.Height = 23;
             this.dgvCF.Size = new System.Drawing.Size(696, 418);
             this.dgvCF.TabIndex = 3;
-            // 
-            // btnExport
-            // 
-            this.btnExport.Location = new System.Drawing.Point(310, 71);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(75, 29);
-            this.btnExport.TabIndex = 11;
-            this.btnExport.Text = "Export All";
-            this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
             // dtSchooltime
             // 
@@ -93,7 +82,6 @@
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.Controls.Add(this.dtSchooltime);
             this.Controls.Add(this.lbSchooltime);
-            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.dgvCF);
             this.Controls.Add(this.panel1);
             this.Name = "Uc_CentralFeeder";
@@ -109,7 +97,6 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dgvCF;
-        private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.DateTimePicker dtSchooltime;
         private System.Windows.Forms.Label lbSchooltime;
     }

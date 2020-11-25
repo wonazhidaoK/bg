@@ -191,5 +191,37 @@ namespace bg.UserControls
         {
             BindingdgvU();
         }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (!this.dgvU.Rows[this.rowIndex].IsNewRow) //判断当前行是否为空行
+            {
+               
+             var uid=   this.dgvU.Rows[this.rowIndex].Cells[1].Value;
+              var classs=  help.GetTAS_ClassesRecordAll().Where(x => x.UId.Equals(uid)).ToList();
+                if (classs.Count > 0)
+                {
+                    MessageBox.Show("当前教师存在课程，不能删除!");
+                }
+                else 
+                {
+                    var id = this.dgvU.Rows[this.rowIndex].Cells[0].Value;
+                   int r= help.DelectTAS_users(new TAS_User { ID =Convert.ToInt32( id.ToString()) });
+                    this.dgvU.Rows.RemoveAt(rowIndex);
+                }
+            }
+        }
+        private int rowIndex = 0;//定义一个全局变量，以便删除行方法可以访问的到
+        private void dgvU_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)//判断是否当前弹起的右键
+            {
+                rowIndex = e.RowIndex;
+                this.dgvU.Rows[e.RowIndex].Selected = true;//选中鼠标所在的当前行
+                this.dgvU.CurrentCell = this.dgvU.Rows[e.RowIndex].Cells[1];//默认当前单元格为第一行第一个
+                //this.contextMenuStrip1.Show(this.dataGridView1, e.Location);//右键菜单绑定当前位置，也就是第一行第一个
+                contextMenuStrip1.Show(Cursor.Position);
+            }
+        }
     }
 }
