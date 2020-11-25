@@ -6,12 +6,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace bg.UserControls
 {
     public partial class Uc_DeptFeeder : UserControl
     {
+        
         readonly DataHelp help = new DataHelp();
         public Uc_DeptFeeder()
         {
@@ -69,37 +71,10 @@ namespace bg.UserControls
             {
 
                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
-
-
             }
             else
             {
-                //SetITGYDGV(DataGridView1);
                 list = CourseRecords.Where(x => x.Dept.Trim() == cbDept.Text).Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE).ToList();
-                //this.DataGridView1.RowCount = list.Count() + 1;
-                //int i = 0;
-                //foreach (DataGridViewRow row in this.DataGridView1.Rows)
-                //{
-                //    if (i >= list.Count())
-                //    {
-                //        return;
-                //    }
-                //    row.Cells["Course Code"].Value = list[i].CourseCode.Trim();
-                //    row.Cells["Course Title"].Value = list[i].CourseTitle.Trim();
-
-
-                //    var classe = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = list[i].ID }).FirstOrDefault();
-                //    if (classe != null)
-                //    {
-                //        //var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TR.Value);
-                //        //if (c != null)
-                //        //{
-                //        ((DataGridViewComboBoxCell)row.Cells["TR"]).Value = classe.UId.Trim();
-                //        row.Cells["TR classes"].Value = classe.ClasseTitle;
-                //        //} 
-                //    }
-                //    i++;
-                //}
             }
             this.DataGridView1.RowCount = list.Count() + 1;
             int i = 0;
@@ -126,28 +101,29 @@ namespace bg.UserControls
                     {
                         ((DataGridViewComboBoxCell)row.Cells[Position.ChiefTR.Value]).Value = c.UId.Trim();
                         row.Cells[Position.ChiefTR.Value + " classes"].Value = c.ClasseTitle;
-                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.Hours;
                     }
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
                     if (c != null)
                     {
-                        row.Cells[Position.CT.Value].Value = c.UId.Trim();
+                        //row.Cells[Position.CT.Value].Value = c.UId.Trim();
+                        ((DataGridViewComboBoxCell)row.Cells[Position.CT.Value]).Value = c.UId.Trim();
                         row.Cells[Position.CT.Value + " classes"].Value = c.ClasseTitle;
-                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                        row.Cells[Position.CT.Value + " Hours"].Value = c.Hours;
                     }
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
                     if (c != null)
                     {
                         row.Cells[Position.OtherTR.Value].Value = c.UId.Trim();
                         row.Cells[Position.OtherTR.Value + " classes"].Value = c.ClasseTitle;
-                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                        row.Cells[Position.OtherTR.Value + " Hours"].Value = c.Hours;
                     }
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TempTR.Value);
                     if (c != null)
                     {
                         row.Cells[Position.TempTR.Value].Value = c.UId.Trim();
                         row.Cells[Position.TempTR.Value + " classes"].Value = c.ClasseTitle;
-                        row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.ClasseTitle;
+                        row.Cells[Position.TempTR.Value + " Hours"].Value = c.Hours;
                     }
                 }
                 row.Cells["id"].Value = list[i].ID;
@@ -164,27 +140,63 @@ namespace bg.UserControls
                 DataGridView1.CurrentCellDirtyStateChanged += DataGridView1_CurrentCellDirtyStateChanged;
                 int c = DataGridView1.CurrentCellAddress.X;
                 int r = DataGridView1.CurrentCellAddress.Y;
-
             }
         }
 
+        private bool AddRowVerify(DataGridViewRow row, ref string message)
+        {
+            foreach (var item in Position.GetAll())
+            {
+                if (row.Cells[item.Value].Value != null && row.Cells[item.Value + " classes"].Value != null && row.Cells[item.Value + " Hours"].Value != null)
+                {
+                    return true;
+                }
+            }
+            message = "There is no class information";
+            return false;
+        }
+
+        private int AddRowVerify(DataGridViewRow row, Position position, ref string message)
+        {
+            if (row.Cells[position.Value].Value == null && row.Cells[position.Value + " classes"].Value == null && row.Cells[position.Value + " Hours"].Value == null)
+            {
+                return 0;
+            }
+            if (row.Cells[position.Value].Value == null)
+            {
+                MessageBox.Show(position.Value + " info incomplete");
+            }
+            if (row.Cells[position.Value + " classes"].Value == null)
+            {
+                MessageBox.Show(position.Value + " classes info incomplete");
+            }
+            if (row.Cells[position.Value + " Hours"].Value == null)
+            {
+                MessageBox.Show(position.Value + " Hours info incomplete");
+            }
+            return 1;
+        }
         private void DataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
         {
             var s = DataGridView1.Rows[e.RowIndex];
-
-
-            //if (cbDept.Text == Dept.MGAF.Name)
-            //{
-            //    if (s.Cells.Count < 7)
-            //    {
-            //        return;
-            //    }
             if (s.Cells["id"].Value != null)
             {
                 return;
             }
             if ((s.Cells["Course Code"].Value == null) || (s.Cells["Course Title"].Value == null))
             {
+                return;
+            }
+            string message = "";
+            if (!AddRowVerify(s, ref message))
+            {
+                MessageBox.Show(message);
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
                 return;
             }
             TAS_CourseRecord courseRecord = new TAS_CourseRecord();
@@ -204,29 +216,30 @@ namespace bg.UserControls
             var r1 = help.AddTAS_CourseRecords(courseRecord);
             if (r1 > 0)
             {
-                if (s.Cells[Position.ChiefTR.Value].Value != null && s.Cells[Position.ChiefTR.Value + " classes"].Value != null && s.Cells[Position.ChiefTR.Value + " Hours"].Value != null)
+                if (AddRowVerify(s, Position.ChiefTR, ref message) == 1)
                 {
                     help.AddTAS_ClassesRecords(new TAS_ClassesRecord
                     {
                         ClasseTitle = s.Cells[Position.ChiefTR.Value + " classes"].Value.ToString(),
                         CourseID = r1,
-                        Hours = Convert.ToInt32(s.Cells[Position.ChiefTR.Value + " Hours"].Value.ToString()),//TODO 需要再确认
+                        Hours = Convert.ToInt32(s.Cells[Position.ChiefTR.Value + " Hours"].Value.ToString()),
                         Position = Position.ChiefTR.Value,
                         UId = s.Cells[Position.ChiefTR.Value].Value.ToString()
                     });
                 }
-                if (s.Cells[Position.CT.Value].Value != null && s.Cells[Position.CT.Value + " classes"].Value != null)
+                if (AddRowVerify(s, Position.CT, ref message) == 1)
                 {
                     help.AddTAS_ClassesRecords(new TAS_ClassesRecord
                     {
                         ClasseTitle = s.Cells[Position.CT.Value + " classes"].Value.ToString(),
                         CourseID = r1,
-                        Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),//TODO 需要再确认
+                        Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),
                         Position = Position.CT.Value,
                         UId = s.Cells[Position.CT.Value].Value.ToString()
                     });
                 }
-                if (s.Cells[Position.OtherTR.Value].Value != null && s.Cells[Position.OtherTR.Value + " classes"].Value != null)
+                if (AddRowVerify(s, Position.OtherTR, ref message) == 1)
+                //if (s.Cells[Position.OtherTR.Value].Value != null && s.Cells[Position.OtherTR.Value + " classes"].Value != null)
                 {
                     help.AddTAS_ClassesRecords(new TAS_ClassesRecord
                     {
@@ -237,7 +250,8 @@ namespace bg.UserControls
                         UId = s.Cells[Position.OtherTR.Value].Value.ToString()
                     });
                 }
-                if (s.Cells[Position.TempTR.Value].Value != null && s.Cells[Position.TempTR.Value + " classes"].Value != null)
+                if (AddRowVerify(s, Position.TempTR, ref message) == 1)
+                //if (s.Cells[Position.TempTR.Value].Value != null && s.Cells[Position.TempTR.Value + " classes"].Value != null)
                 {
                     help.AddTAS_ClassesRecords(new TAS_ClassesRecord
                     {
@@ -586,7 +600,7 @@ namespace bg.UserControls
 
             var timeE = GetCurrentMonthLastDay(timeS);
             var CourseRecords = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE);
-            var list = CourseRecords.Where(x => x.Dept.Trim() == Dept.ITGY.Value.ToString()).ToList();
+            var list = CourseRecords.ToList();
             System.Data.DataTable dt1 = new System.Data.DataTable();
             dt1.Columns.Add("Course Code");
             dt1.Columns.Add("Course Title");
