@@ -15,8 +15,10 @@ namespace CommonHelp
         /// <summary>
         /// 数据库连接字符串
         /// </summary>
-        private static readonly string connectionString = "Data Source=DESKTOP-SPIE2BR;Initial Catalog=ezblogin;Integrated Security=True";
-
+       // private static readonly string connectionString = "Data Source=DESKTOP-SPIE2BR;Initial Catalog=ezblogin;Integrated Security=True";
+        private static readonly string connectionString = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"].ToString();
+        //Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        //config.AppSettings.Settings.Add("test", DateTime.Now.ToShortDateString());
         /// <summary>
         /// 查询列表
         /// </summary>

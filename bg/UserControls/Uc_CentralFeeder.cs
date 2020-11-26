@@ -39,25 +39,29 @@ namespace bg.UserControls
 
             var timeE = GetCurrentMonthLastDay(timeS);
             var CourseRecords = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= timeS && x.Schooltime <= timeE);
-
-            Set(dgvCF);
             var list = CourseRecords.ToList();
+            System.Data.DataTable dt1 = new System.Data.DataTable();
+            dt1.Columns.Add("Course Code");
+            dt1.Columns.Add("Course Title");
+            dt1.Columns.Add("User ID");
+            dt1.Columns.Add("Classes");
+            dt1.Columns.Add("Normal or OT");
             foreach (var item in list)
             {
-                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID }).FirstOrDefault();
-
-                if (classes != null)
+                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID }).ToList();
+                foreach (var c in classes)
                 {
-                    this.dgvCF.RowCount = list.Count();
-                    foreach (DataGridViewRow row in this.dgvCF.Rows)
-                    {
-                        row.Cells[0].Value = item.CourseCode.Trim();
-                        row.Cells[1].Value = item.CourseTitle.Trim();
-                        row.Cells[2].Value = classes.UId.ToString().Trim();
-                        row.Cells[3].Value = classes.ClasseTitle.ToString().Trim();
-                    }
+                    DataRow NewRow = dt1.NewRow();
+                    NewRow["Course Code"] = item.CourseCode;
+                    NewRow["Course Title"] = item.CourseTitle;
+                    NewRow["User ID"] = c.UId;
+                    NewRow["Classes"] = c.ClasseTitle;
+                    NewRow["Normal or OT"] = c.Position.Trim() == Position.TROT.Value ? "OT" : (c.Position.Trim() == Position.CT.Value ? "CT" : "");
+                    dt1.Rows.Add(NewRow);
                 }
             }
+            this.dgvCF.DataSource = null;
+            this.dgvCF.DataSource = dt1;
         }
 
         public void Set(DataGridView dataGridView)

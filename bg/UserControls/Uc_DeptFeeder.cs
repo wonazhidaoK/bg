@@ -98,34 +98,59 @@ namespace bg.UserControls
                     var c = classes.FirstOrDefault(x => x.Position.Trim() == Position.ChiefTR.Value);
                     if (c != null)
                     {
-                        ((DataGridViewComboBoxCell)row.Cells[Position.ChiefTR.Value]).Value = c.UId.Trim();
+                        row.Cells[Position.ChiefTR.Value] = new DataGridViewTextBoxCell()
+                        {
+                            Value = c.UId.Trim()
+                        };
                         row.Cells[Position.ChiefTR.Value + " classes"].Value = c.ClasseTitle;
                         row.Cells[Position.ChiefTR.Value + " Hours"].Value = c.Hours;
                     }
-                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
-                    if (c != null)
-                    {
-                        //row.Cells[Position.CT.Value].Value = c.UId.Trim();
-                        ((DataGridViewComboBoxCell)row.Cells[Position.CT.Value]).Value = c.UId.Trim();
-                        row.Cells[Position.CT.Value + " classes"].Value = c.ClasseTitle;
-                        row.Cells[Position.CT.Value + " Hours"].Value = c.Hours;
-                    }
+
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
                     if (c != null)
                     {
-                        row.Cells[Position.OtherTR.Value].Value = c.UId.Trim();
+                        row.Cells[Position.OtherTR.Value].Value = new DataGridViewTextBoxCell()
+                        {
+                            Value = c.UId.Trim()
+                        };
                         row.Cells[Position.OtherTR.Value + " classes"].Value = c.ClasseTitle;
                         row.Cells[Position.OtherTR.Value + " Hours"].Value = c.Hours;
                     }
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TempTR.Value);
                     if (c != null)
                     {
-                        row.Cells[Position.TempTR.Value].Value = c.UId.Trim();
+                        row.Cells[Position.TempTR.Value] = new DataGridViewTextBoxCell()
+                        {
+                            Value = c.UId.Trim()
+                        };
+                        //row.Cells[Position.TempTR.Value].Value = c.UId.Trim();
                         row.Cells[Position.TempTR.Value + " classes"].Value = c.ClasseTitle;
                         row.Cells[Position.TempTR.Value + " Hours"].Value = c.Hours;
                     }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TROT.Value);
+                    if (c != null)
+                    {
+                        row.Cells[Position.TROT.Value] = new DataGridViewTextBoxCell()
+                        {
+                            Value = c.UId.Trim()
+                        };
+                        row.Cells[Position.TROT.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.TROT.Value + " Hours"].Value = c.Hours;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
+                    if (c != null)
+                    {
+                        //row.Cells[Position.CT.Value].Value = c.UId.Trim();
+                        row.Cells[Position.CT.Value] = new DataGridViewTextBoxCell()
+                        {
+                            Value = c.UId.Trim()
+                        };
+                        row.Cells[Position.CT.Value + " classes"].Value = c.ClasseTitle;
+                        row.Cells[Position.CT.Value + " Hours"].Value = c.Hours;
+                    }
                 }
                 row.Cells["id"].Value = list[i].ID;
+                row.ReadOnly = true;
                 i++;
             }
         }
@@ -164,14 +189,17 @@ namespace bg.UserControls
             if (row.Cells[position.Value].Value == null)
             {
                 MessageBox.Show(position.Value + " info incomplete");
+                return 2;
             }
             if (row.Cells[position.Value + " classes"].Value == null)
             {
                 MessageBox.Show(position.Value + " classes info incomplete");
+                return 2;
             }
             if (row.Cells[position.Value + " Hours"].Value == null)
             {
                 MessageBox.Show(position.Value + " Hours info incomplete");
+                return 2;
             }
             return 1;
         }
@@ -191,6 +219,56 @@ namespace bg.UserControls
             if (!AddRowVerify(s, ref message))
             {
                 MessageBox.Show(message);
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
+                return;
+            }
+            if (AddRowVerify(s, Position.ChiefTR, ref message) == 2)
+            {
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
+                return;
+            }
+            if (AddRowVerify(s, Position.CT, ref message) == 2)
+            {
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
+                return;
+            }
+            if (AddRowVerify(s, Position.OtherTR, ref message) == 2)
+            {
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
+                return;
+            }
+            if (AddRowVerify(s, Position.TempTR, ref message) == 2)
+            {
+                this.BeginInvoke(new System.Action(() =>
+                {
+                    // 更新使用次数
+                    LoadDgv();
+                }));
+
+                return;
+            }
+            if (AddRowVerify(s, Position.TROT, ref message) == 2)
+            {
                 this.BeginInvoke(new System.Action(() =>
                 {
                     // 更新使用次数
@@ -227,17 +305,7 @@ namespace bg.UserControls
                         UId = s.Cells[Position.ChiefTR.Value].Value.ToString()
                     });
                 }
-                if (AddRowVerify(s, Position.CT, ref message) == 1)
-                {
-                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
-                    {
-                        ClasseTitle = s.Cells[Position.CT.Value + " classes"].Value.ToString(),
-                        CourseID = r1,
-                        Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),
-                        Position = Position.CT.Value,
-                        UId = s.Cells[Position.CT.Value].Value.ToString()
-                    });
-                }
+
                 if (AddRowVerify(s, Position.OtherTR, ref message) == 1)
                 //if (s.Cells[Position.OtherTR.Value].Value != null && s.Cells[Position.OtherTR.Value + " classes"].Value != null)
                 {
@@ -260,6 +328,28 @@ namespace bg.UserControls
                         Hours = Convert.ToInt32(s.Cells[Position.TempTR.Value + " Hours"].Value.ToString()),
                         Position = Position.TempTR.Value,
                         UId = s.Cells[Position.TempTR.Value].Value.ToString()
+                    });
+                }
+                if (AddRowVerify(s, Position.TROT, ref message) == 1)
+                {
+                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+                    {
+                        ClasseTitle = s.Cells[Position.TROT.Value + " classes"].Value.ToString(),
+                        CourseID = r1,
+                        Hours = Convert.ToInt32(s.Cells[Position.TROT.Value + " Hours"].Value.ToString()),
+                        Position = Position.TROT.Value,
+                        UId = s.Cells[Position.TROT.Value].Value.ToString()
+                    });
+                }
+                if (AddRowVerify(s, Position.CT, ref message) == 1)
+                {
+                    help.AddTAS_ClassesRecords(new TAS_ClassesRecord
+                    {
+                        ClasseTitle = s.Cells[Position.CT.Value + " classes"].Value.ToString(),
+                        CourseID = r1,
+                        Hours = Convert.ToInt32(s.Cells[Position.CT.Value + " Hours"].Value.ToString()),
+                        Position = Position.CT.Value,
+                        UId = s.Cells[Position.CT.Value].Value.ToString()
                     });
                 }
             }
@@ -380,7 +470,7 @@ namespace bg.UserControls
                                 BeforeLasthour = BeforeLastCourseClass.Where(x => x.UId == user.UId).Sum(x => x.Hours);
                             }
 
-                            if (!((ThisWeekhour >= 18) || (LastWeekhour >= 18) || (BeforeLasthour >= 18) || (FirstThreehour) >= 18))
+                            if (!((ThisWeekhour >= 18) && (LastWeekhour >= 18) && (BeforeLasthour >= 18) && (FirstThreehour) >= 18))
                             {
                                 users.Add(user);
                             }
@@ -525,13 +615,7 @@ namespace bg.UserControls
                         NewRow[Position.ChiefTR.Value + " classes"] = c.UId.Trim();
                         NewRow[Position.ChiefTR.Value + " Hours"] = c.Hours;
                     }
-                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
-                    if (c != null)
-                    {
-                        NewRow[Position.CT.Value] = c.UId.Trim();
-                        NewRow[Position.CT.Value + " classes"] = c.UId.Trim();
-                        NewRow[Position.CT.Value + " Hours"] = c.Hours;
-                    }
+
                     c = classes.FirstOrDefault(x => x.Position.Trim() == Position.OtherTR.Value);
                     if (c != null)
                     {
@@ -545,6 +629,20 @@ namespace bg.UserControls
                         NewRow[Position.TempTR.Value] = c.UId.Trim();
                         NewRow[Position.TempTR.Value + " classes"] = c.UId.Trim();
                         NewRow[Position.TempTR.Value + " Hours"] = c.Hours;//.Trim();
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.TROT.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.TROT.Value] = c.UId.Trim();
+                        NewRow[Position.TROT.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.TROT.Value + " Hours"] = c.Hours;
+                    }
+                    c = classes.FirstOrDefault(x => x.Position.Trim() == Position.CT.Value);
+                    if (c != null)
+                    {
+                        NewRow[Position.CT.Value] = c.UId.Trim();
+                        NewRow[Position.CT.Value + " classes"] = c.UId.Trim();
+                        NewRow[Position.CT.Value + " Hours"] = c.Hours;
                     }
                 }
                 dt1.Rows.Add(NewRow);
@@ -586,15 +684,15 @@ namespace bg.UserControls
             dt1.Columns.Add("Normal or OT");
             foreach (var item in list)
             {
-                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID }).FirstOrDefault();
-                if (classes != null)
+                var classes = help.GetTAS_ClassesRecordByCourseId(new TAS_ClassesRecord { CourseID = item.ID }).ToList();
+                foreach (var c in classes)
                 {
                     DataRow NewRow = dt1.NewRow();
                     NewRow["Course Code"] = item.CourseCode;
                     NewRow["Course Title"] = item.CourseTitle;
-                    NewRow["User ID"] = classes.UId;
-                    NewRow["Classes"] = classes.ClasseTitle;
-                    NewRow["Normal or OT"] = classes.Position.Trim() == Position.TROT.Value ? "OT" : (classes.Position.Trim() == Position.CT.Value ? "CT" : "");
+                    NewRow["User ID"] = c.UId;
+                    NewRow["Classes"] = c.ClasseTitle;
+                    NewRow["Normal or OT"] = c.Position.Trim() == Position.TROT.Value ? "OT" : (c.Position.Trim() == Position.CT.Value ? "CT" : "");
                     dt1.Rows.Add(NewRow);
                 }
             }
