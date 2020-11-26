@@ -8,14 +8,10 @@ namespace bg
     public partial class login : Form
     {
         readonly DataHelp help = new DataHelp();
+
         public login()
         {
             InitializeComponent();
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void btnlogin_Click(object sender, EventArgs e)

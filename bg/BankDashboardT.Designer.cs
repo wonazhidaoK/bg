@@ -274,8 +274,7 @@
             this.Controls.Add(this.panelLeft);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "BankDashboardT";
-            this.Text = "BankDashboardT";
-            this.Load += new System.EventHandler(this.BankDashboardT_Load);
+            this.Text = "BankDashboardT"; 
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

@@ -69,8 +69,7 @@
             this.btnupdate.Size = new System.Drawing.Size(145, 57);
             this.btnupdate.TabIndex = 0;
             this.btnupdate.Text = "Details";
-            this.btnupdate.UseVisualStyleBackColor = true;
-            this.btnupdate.Click += new System.EventHandler(this.btnupdate_Click);
+            this.btnupdate.UseVisualStyleBackColor = true; 
             // 
             // dgvU
             // 

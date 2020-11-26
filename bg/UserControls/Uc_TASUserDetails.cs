@@ -103,15 +103,6 @@ namespace bg.UserControls
             cbTitle.DataSource = titleBindingSource;
         }
 
-        private void btnupdate_Click(object sender, EventArgs e)
-        {
-            using (updateForm uf = new updateForm())
-            {
-                uf.ShowDialog();
-                this.OnLoad(e);
-            }
-        }
-
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (cbType.SelectedIndex)
@@ -206,7 +197,9 @@ namespace bg.UserControls
                 }
             }
         }
+
         private int rowIndex = 0;//定义一个全局变量，以便删除行方法可以访问的到
+
         private void dgvU_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)//判断是否当前弹起的右键

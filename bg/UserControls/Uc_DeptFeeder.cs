@@ -6,15 +6,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace bg.UserControls
 {
     public partial class Uc_DeptFeeder : UserControl
     {
-        
         readonly DataHelp help = new DataHelp();
+
         public Uc_DeptFeeder()
         {
             InitializeComponent();
@@ -176,6 +175,7 @@ namespace bg.UserControls
             }
             return 1;
         }
+
         private void DataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
         {
             var s = DataGridView1.Rows[e.RowIndex];
@@ -300,30 +300,6 @@ namespace bg.UserControls
             //        });
             //    }
             //}
-        }
-
-        public DataGridView SetITGYDGV(DataGridView dataGridView)
-        {
-            dataGridView.Columns.Clear();
-            dataGridView.Rows.Clear();
-            DataGridViewComboBoxColumn d = new DataGridViewComboBoxColumn
-            {
-                HeaderText = "TR"
-            };
-            d.DataSource = help.GetTAS_UserAll().Where(x => x.Type == Teacher_type.T.Name).ToList();
-            d.HeaderText = "TR";
-            d.Name = "TR";
-            d.DisplayMember = "UId";
-            d.ValueMember = "UId";
-            dataGridView.Columns.Add(d);
-            dataGridView.Columns.Add("TR classes", "TR classes");
-            dataGridView.Columns.Add("Course Code", "Course Code");
-            dataGridView.Columns.Add("Course Title", "Course Title");
-            dataGridView.Columns.Add("Course Hours", "Course Hours");
-            dataGridView.Columns.Add("id", "id");
-            dataGridView.Columns["id"].Visible = false;
-
-            return dataGridView;
         }
 
         public DataGridView SetMGAFDGV(DataGridView dataGridView)
@@ -594,6 +570,7 @@ namespace bg.UserControls
             DateTime d2 = d1.AddMonths(1).AddDays(-1);
             return d2;
         }
+
         private void SetCentralFeeder(List<WorksheetModel> worksheets)
         {
             var timeS = new DateTime(dtSchooltime.Value.Year, dtSchooltime.Value.Month, 1, 00, 00, 00);
@@ -629,17 +606,6 @@ namespace bg.UserControls
                 HeadStr = null
 
             });
-        }
-
-        public class WorksheetModel
-        {
-            public string Title { get; set; }
-
-            public System.Data.DataTable Table { get; set; }
-
-            public string WorksheetName { get; set; }
-
-            public string[] HeadStr { get; set; }
         }
 
         public void DataTableToExcel(List<WorksheetModel> worksheets)

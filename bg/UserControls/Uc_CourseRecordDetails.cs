@@ -9,6 +9,7 @@ namespace bg.UserControls
     public partial class Uc_CourseRecordDetails : UserControl
     {
         readonly DataHelp help = new DataHelp();
+
         public Uc_CourseRecordDetails()
         {
             InitializeComponent();
@@ -25,21 +26,13 @@ namespace bg.UserControls
         }
 
         #region binding
+
         private void BindingUsers()
         {
             tASUserBindingSource.DataSource = help.GetTAS_UserAll(); ;
             cbUid.DataSource = tASUserBindingSource;
         }
-        //private void BindingCourseTypes()
-        //{
-        //    List<CourseType> courseTypes = new List<CourseType>()
-        //    {
-        //       CourseType.L,
-        //       CourseType.T
-        //    };
-        //    courseTypeBindingSource.DataSource = courseTypes;
-        //    cbType.DataSource = courseTypeBindingSource;
-        //}
+
         private void BindingDepts()
         {
             List<Dept> depts = new List<Dept>()
@@ -51,20 +44,8 @@ namespace bg.UserControls
             deptBindingSource.DataSource = depts;
             cbDept.DataSource = deptBindingSource;
         }
+
         #endregion
-
-
-        private void btnupdate_Click(object sender, EventArgs e)
-        {
-            using (updateForm uf = new updateForm())
-            {
-                uf.ShowDialog();
-                this.OnLoad(e);
-            }
-        }
-
-
-
 
         private void btnsaveupdate_Click(object sender, EventArgs e)
         {
@@ -110,7 +91,6 @@ namespace bg.UserControls
             else { MessageBox.Show("users 添加成功"); }
         }
 
-        //通用方法
         /// <summary>
         /// 判断文本框输入内容
         /// </summary>
@@ -141,11 +121,6 @@ namespace bg.UserControls
                     }
                 }
             }
-        }
-
-        private void tbHours_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            CheckNumber(sender, e);
         }
 
         private void tbHQ_KeyPress(object sender, KeyPressEventArgs e)

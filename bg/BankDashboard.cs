@@ -20,12 +20,7 @@ namespace bg
         {
             panelSide.Top = btn.Top;
             panelSide.Height = btn.Height;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        } 
 
         private void button6_Click(object sender, EventArgs e)
         {
@@ -45,9 +40,7 @@ namespace bg
             moveSidePanel(btnView);
             UserControls.Uc_TASUserDetails uu = new UserControls.Uc_TASUserDetails();
             addControls(uu);
-        }
-
-        
+        } 
 
         private void btnGenrate_Click(object sender, EventArgs e)
         {

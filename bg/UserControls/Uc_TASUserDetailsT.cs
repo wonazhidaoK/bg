@@ -8,6 +8,7 @@ namespace bg.UserControls
     public partial class Uc_TASUserDetailsT : UserControl
     {
         readonly DataHelp help = new DataHelp();
+
         public Uc_TASUserDetailsT()
         {
             InitializeComponent();
@@ -27,15 +28,6 @@ namespace bg.UserControls
             }
             tASUserBindingSource.DataSource = list;
             dgvU.DataSource = tASUserBindingSource;
-        }
-
-        private void btnupdate_Click(object sender, EventArgs e)
-        {
-            using (updateForm uf = new updateForm())
-            {
-                uf.ShowDialog();
-                this.OnLoad(e);
-            }
         }
 
         private void btnQuery_Click(object sender, EventArgs e)

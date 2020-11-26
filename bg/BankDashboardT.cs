@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace bg
@@ -15,17 +8,7 @@ namespace bg
         public BankDashboardT()
         {
             InitializeComponent();
-        }
-
-        private void BankDashboardT_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelControls_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        } 
 
         private void btnView_Click(object sender, EventArgs e)
         {
@@ -33,11 +16,7 @@ namespace bg
             UserControls.Uc_TASUserDetailsT uu = new UserControls.Uc_TASUserDetailsT();
             addControls(uu);
         }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+         
         private void addControls(UserControl uc)
         {
             panelControls.Controls.Clear();
@@ -45,6 +24,7 @@ namespace bg
             panelControls.Controls.Add(uc);
             uc.BringToFront();
         }
+
         private void moveSidePanel(Control btn)
         {
             panelSide.Top = btn.Top;

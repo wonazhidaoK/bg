@@ -282,8 +282,7 @@
             this.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "BankDashboard";
-            this.Text = "Bank Dashboard";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "Bank Dashboard"; 
             this.panelLeft.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();

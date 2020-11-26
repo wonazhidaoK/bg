@@ -44,6 +44,7 @@ namespace bg.UserControls
             BindingStaffNo();
             BindingDuty();
         }
+
         private void BindingCCentre()
         {
             costCentreBindingSource.DataSource = Cost_Centre.GetAll();
@@ -62,7 +63,6 @@ namespace bg.UserControls
             dgvDuty.DataSource = tASDutyBindingSource;
         }
 
-        //通用方法
         /// <summary>
         /// 判断文本框输入内容
         /// </summary>
