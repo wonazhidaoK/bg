@@ -44,13 +44,8 @@ namespace bg.UserControls
         }
 
         private void BindingDepts()
-        {
-            List<Dept> depts = new List<Dept>
-            {
-            Dept.ITGY,
-            Dept.MGAF
-            };
-            deptBindingSource.DataSource = depts;
+        { 
+            deptBindingSource.DataSource = Dept.GetAll();
             cbDept.DataSource = deptBindingSource;
         }
 
