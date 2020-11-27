@@ -408,7 +408,8 @@ namespace bg.UserControls
             {
                 DataGridViewComboBoxColumn d = new DataGridViewComboBoxColumn
                 {
-                    HeaderText = item.Value
+                    HeaderText = item.Value,
+
                 };
                 if (item.Value == Position.CT.Value)
                 {
@@ -472,13 +473,14 @@ namespace bg.UserControls
 
                             if (!((ThisWeekhour >= 18) && (LastWeekhour >= 18) && (BeforeLasthour >= 18) && (FirstThreehour) >= 18))
                             {
-                                users.Add(user);
                             }
+                            users.Add(user);
                         }
                     }
 
 
                     d.DataSource = users;
+
                 }
                 else
                 {
@@ -831,6 +833,98 @@ namespace bg.UserControls
                 }
             }
 
+        }
+
+        private void DataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                DataGridViewComboBoxColumn combo = DataGridView1.Columns[e.ColumnIndex] as DataGridViewComboBoxColumn;
+                if (combo != null)  //如果该列是ComboBox列
+                {
+                    DataGridView1.BeginEdit(false); //结束该列的编辑状态
+                    DataGridViewComboBoxEditingControl comboEdite = DataGridView1.EditingControl as DataGridViewComboBoxEditingControl;
+                    if (comboEdite != null)
+                    {
+                        //下面就可以写需要实现的方法
+                        //TaskAllotManager TaskMg = new TaskAllotManager();
+                        ////这里获取DataGridViewComboBox选中的值   
+                        //string dept = Convert.ToString(ChildTaskGridview.SelectedRows[0].Cells["CheckDept"].FormattedValue);
+                        //TaskCheck.DataSource = TaskMg.GetDutyPerson(dept, 1);
+                        //TaskCheck.DisplayMember = "CheckUser";
+                        //TaskCheck.ValueMember = "CheckUserID";
+
+                        /*
+                         * 分别找寻前三周和本周的工作时长 判断是否能继续雇佣
+                         */
+                        var WeekNo = WeekHelp.GetWeekByTime(DateTime.Now);
+                        var ThisWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo, 1);
+                        var LastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 1, 1);
+                        var BeforeLastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 2, 1);
+                        var FirstThreeWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 3, 1);
+                        var ThisWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= ThisWeekMonday && x.Schooltime <= ThisWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
+                        List<TAS_ClassesRecord> ThisWeekCourseClass = new List<TAS_ClassesRecord>();
+                        if (ThisWeekCourse.Count > 0)
+                        {
+                            ThisWeekCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel
+                            {
+                                ids = ThisWeekCourse.Select(x => x.ID).ToArray()
+                            });
+                        }
+
+                        var LastWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= LastWeekMonday && x.Schooltime <= LastWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
+                        List<TAS_ClassesRecord> LastWeekCourseClass = new List<TAS_ClassesRecord>();
+                        if (LastWeekCourse.Count > 0) { LastWeekCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = LastWeekCourse.Select(x => x.ID).ToArray() }); }
+
+
+                        var BeforeLastCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= BeforeLastWeekMonday && x.Schooltime <= BeforeLastWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
+                        List<TAS_ClassesRecord> BeforeLastCourseClass = new List<TAS_ClassesRecord>();
+                        if (BeforeLastCourse.Count > 0) { BeforeLastCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = BeforeLastCourse.Select(x => x.ID).ToArray() }); }
+
+                        var FirstThreeCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= FirstThreeWeekMonday && x.Schooltime <= FirstThreeWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
+                        List<TAS_ClassesRecord> FirstThreeCourseClass = new List<TAS_ClassesRecord>();
+                        if (FirstThreeCourse.Count > 0) { FirstThreeCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = FirstThreeCourse.Select(x => x.ID).ToArray() }); }
+
+                        double ThisWeekhour = 0;
+                        if (ThisWeekCourseClass.Count > 0)
+                        {
+                            ThisWeekhour = ThisWeekCourseClass.Where(x => x.UId == comboEdite.Text).Sum(x => x.Hours);
+                        }
+                        double LastWeekhour = 0;
+                        if (LastWeekCourseClass.Count > 0)
+                        {
+                            LastWeekhour = LastWeekCourseClass.Where(x => x.UId == comboEdite.Text).Sum(x => x.Hours);
+                        }
+                        double FirstThreehour = 0;
+                        if (FirstThreeCourseClass.Count > 0)
+                        {
+                            FirstThreehour = FirstThreeCourseClass.Where(x => x.UId == comboEdite.Text).Sum(x => x.Hours);
+                        }
+                        double BeforeLasthour = 0;
+                        if (BeforeLastCourseClass.Count > 0)
+                        {
+                            BeforeLasthour = BeforeLastCourseClass.Where(x => x.UId == comboEdite.Text).Sum(x => x.Hours);
+                        }
+
+                        if ((ThisWeekhour >= 18) && (LastWeekhour >= 18) && (BeforeLasthour >= 18) && (FirstThreehour >= 18))
+                        {
+                            MessageBox.Show("I've been working 18 hours for four straight weeks !");
+                        }
+                        if (ThisWeekhour < 18)
+                        {
+                            MessageBox.Show("Work less than 18 hours this week !");
+                        }
+                    }
+                }
+
+
+                //DataGridViewTextBoxColumn textbox = ChildTaskGridview.Columns[e.ColumnIndex] as DataGridViewTextBoxColumn;
+                //if (textbox != null) //如果该列是TextBox列
+                //{
+                //    ChildTaskGridview.BeginEdit(true); //开始编辑状态
+                //}
+
+            }
         }
     }
 }
