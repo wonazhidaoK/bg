@@ -424,7 +424,7 @@ namespace bg.UserControls
                         var LastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 1, 1);
                         var BeforeLastWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 2, 1);
                         var FirstThreeWeekMonday = WeekHelp.GetTimeByWeek(2020, WeekNo - 3, 1);
-                        var ThisWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= ThisWeekMonday && x.Schooltime <= ThisWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        var ThisWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= ThisWeekMonday && x.Schooltime <= ThisWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
                         List<TAS_ClassesRecord> ThisWeekCourseClass = new List<TAS_ClassesRecord>();
                         if (ThisWeekCourse.Count > 0)
                         {
@@ -434,16 +434,16 @@ namespace bg.UserControls
                             });
                         }
 
-                        var LastWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= LastWeekMonday && x.Schooltime <= LastWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        var LastWeekCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= LastWeekMonday && x.Schooltime <= LastWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
                         List<TAS_ClassesRecord> LastWeekCourseClass = new List<TAS_ClassesRecord>();
                         if (LastWeekCourse.Count > 0) { LastWeekCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = LastWeekCourse.Select(x => x.ID).ToArray() }); }
 
 
-                        var BeforeLastCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= BeforeLastWeekMonday && x.Schooltime <= BeforeLastWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        var BeforeLastCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= BeforeLastWeekMonday && x.Schooltime <= BeforeLastWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
                         List<TAS_ClassesRecord> BeforeLastCourseClass = new List<TAS_ClassesRecord>();
                         if (BeforeLastCourse.Count > 0) { BeforeLastCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = BeforeLastCourse.Select(x => x.ID).ToArray() }); }
 
-                        var FirstThreeCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= FirstThreeWeekMonday && x.Schooltime <= FirstThreeWeekMonday.AddDays(6) && x.Dept == Dept.MGAF.Value).ToList();
+                        var FirstThreeCourse = help.GetTAS_CourseRecordAll().Where(x => x.Schooltime >= FirstThreeWeekMonday && x.Schooltime <= FirstThreeWeekMonday.AddDays(6) && x.Dept == cbDept.Text).ToList();
                         List<TAS_ClassesRecord> FirstThreeCourseClass = new List<TAS_ClassesRecord>();
                         if (FirstThreeCourse.Count > 0) { FirstThreeCourseClass = help.GetTAS_ClassesRecordByCourseIds(new DataHelp.ByCourseIdsModel { ids = FirstThreeCourse.Select(x => x.ID).ToArray() }); }
 
